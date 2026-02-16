@@ -1,6 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import { prisma } from "../lib/prisma";
+import { Prisma } from "@prisma/client";
 
 const router = Router();
 
@@ -43,8 +44,14 @@ router.post("/register", async (req, res) => {
         });
         
     } catch (error) {
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2002"
+        ) {
+            return res.status(409).json({error: "Email already registered"});
+        }
         console.error(error);
-        return res.status(500).json({error: "Something went wrong on server side"})
+        return res.status(500).json({error: "Something went wrong on server side"});
     }
 })
 
