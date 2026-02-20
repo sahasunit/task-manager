@@ -5,7 +5,7 @@ import { Prisma } from "@prisma/client";
 const router = Router();
 
 //get all tasks
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
     try {
         if (!req.userId) {
             return res.status(401).json({ message: "Unauthorized" });
@@ -18,8 +18,7 @@ router.get("/", async (req, res) => {
         return res.status(200).json(tasks);
 
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({error: "Something went wrong on server side"});
+        next(error);
     }
 })
 

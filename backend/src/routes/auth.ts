@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 
 const router = Router();
 
-router.post("/register", async (req, res) => {
+router.post("/register", async (req, res, next) => {
     try {
         const {email, password} = req.body;
 
@@ -51,12 +51,11 @@ router.post("/register", async (req, res) => {
         ) {
             return res.status(409).json({error: "Email already registered"});
         }
-        console.error(error);
-        return res.status(500).json({error: "Something went wrong on server side"});
+        next(error);
     }
 })
 
-router.post("/login", async (req, res) => {
+router.post("/login", async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
@@ -93,8 +92,7 @@ router.post("/login", async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({error: "Something went wrong on server side"})
+        next(error);
     }
 })
 
